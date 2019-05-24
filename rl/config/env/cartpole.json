@@ -1,0 +1,14 @@
+{
+  "ENV_PROVIDER":"GYM",
+  "ENV_NAME":"CartPole-v0",
+  "STATE_SIZE":[80],
+  "NUM_ACTIONS":2,
+  "ENV_PARAMS":{
+  },
+  "STATE_RANGES":[
+    [-2.5,2.5],
+    [-1.0,1.0],
+    [-1.6,1.6],
+    [-1.0,1.0]
+  ]
+}
