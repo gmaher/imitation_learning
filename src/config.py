@@ -1,4 +1,4 @@
-num_episodes=700
+num_episodes=50
 num_steps = 200
 Nr  = 50
 Ne  = 5
