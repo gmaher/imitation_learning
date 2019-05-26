@@ -11,7 +11,15 @@ class Agent(object):
 class DiscreteActionAgent(Agent):
     def act(self, s):
         sp = s
-        if (len(s.shape)==1):
+        if type(s) == np.int64 or type(s) == int:
+            sp = np.int32(s)
+            sp = np.array([[sp]])
+            
+        elif type(s) == np.float64 or type(s) == float:
+            sp = np.float32(s)
+            sp = np.array([[sp]])
+
+        elif (len(s.shape)==1):
             sp = s[np.newaxis,:]
 
         p = self.model.predict(sp)[0]

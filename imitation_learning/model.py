@@ -10,11 +10,6 @@ class Model(object):
         self.finalize()
     def setup(self):
         pass
-    def finalize(self):
-        self.model.compile(optimizer='adam',
-            loss=self.loss,
-            learning_rate=learning_rate)
-
     def predict(self, s):
         pass
     def train(self, T):
