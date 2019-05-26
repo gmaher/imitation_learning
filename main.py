@@ -6,10 +6,10 @@ sys.path.append(os.path.abspath('..'))
 import numpy as np
 
 import config
-from src.util import read_json
-from src.environment import get_environment
-from src.agent_factory import get_agent
-from src.simulator import Simulator
+from imitation_learning.util import read_json
+from imitation_learning.environment import get_environment
+from imitation_learning.agent_factory import get_agent
+from imitation_learning.simulator import Simulator
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-agent', type=str)
@@ -34,6 +34,12 @@ for i in range(config.num_episodes):
     avg_r = config.alpha*avg_r + (1.0-config.alpha)*R
     rewards.append(avg_r)
     print(R, avg_r)
+
+    replay.append(sim.tuples)
+
+    T = replay.sample()
+
+    model.train(T)
 
 import matplotlib.pyplot as plt
 plt.plot(rewards)

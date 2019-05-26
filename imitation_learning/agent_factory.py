@@ -1,5 +1,3 @@
-from src.agent import TabularPolicy
-
 import numpy as np
 
 def get_agent(agent_config, env_config):
