@@ -1,11 +1,10 @@
 import numpy as np
 
 class EpisodeReplay:
-    def __init__(self, input_size, action_size,
-            num_episodes, num_steps, size=1000, batch_size=8):
+    def __init__(self, input_size, action_size, num_steps,
+            size=1000, batch_size=8):
         self.input_size = input_size
         self.action_size = action_size
-        self.num_episodes = num_episodes
         self.num_steps = num_steps
         self.size = size
         self.batch_size = batch_size
@@ -20,9 +19,12 @@ class EpisodeReplay:
             self.tuples[i] = tuples
 
     def sample(self):
-        S = np.zeros((self.num_episodes, self.num_steps, self.input_size))
-        A = np.zeros((self.num_episodes, self.num_steps, self.action_size))
-        R = np.zeros((self.num_episodes, self.num_steps))
+        S = np.zeros((self.batch_size, self.num_steps, self.input_size),
+            dtype=np.float32)
+        A = np.zeros((self.batch_size, self.num_steps, self.action_size),
+            dtype=np.float32)
+        R = np.zeros((self.batch_size, self.num_steps),
+            dtype=np.float32)
 
         tuples = np.random.choice(self.tuples, size=self.batch_size)
 
