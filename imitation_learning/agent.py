@@ -2,27 +2,21 @@ import numpy as np
 import tensorflow as tf
 from tensorflow import keras
 
+def do_nothing(x):
+    return x
+
 class Agent(object):
-    def __init__(self, model):
+    def __init__(self, model, preprocess_state=do_nothing):
         self.model = model
+        self.preprocess_state = preprocess_state
     def act(self,s):
         pass
 
 class DiscreteActionAgent(Agent):
     def act(self, s):
-        sp = s
-        if type(s) == np.int64 or type(s) == int:
-            sp = np.int32(s)
-            sp = np.array([[sp]])
-            
-        elif type(s) == np.float64 or type(s) == float:
-            sp = np.float32(s)
-            sp = np.array([[sp]])
+        S = self.preprocess_state(s)
 
-        elif (len(s.shape)==1):
-            sp = s[np.newaxis,:]
-
-        p = self.model.predict(sp)[0]
+        p = self.model.predict(S)[0]
 
         return np.random.choice(len(p), p=p)
 

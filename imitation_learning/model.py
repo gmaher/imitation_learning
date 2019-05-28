@@ -1,25 +1,32 @@
-from imitation_learning.loss import discrete_policy_loss, continuous_policy_loss
+import numpy as np
+from imitation_learning import loss
+import tensorflow as tf
 
-class Model(object):
-    def __init__(self, input_size, output_size, learning_rate):
-        self.input_size = input_size
-        self.output_size = output_size
-        self.learning_rate = learning_rate
+class DiscreteActorCritic:
+    def __init__(self, policy, value_function, preprocess, learning_rate):
+        self.policy = policy
+        self.vf  = value_function
+        self.pre = preprocess
 
-        self.setup()
-        self.finalize()
-    def setup(self):
-        pass
-    def predict(self, s):
-        pass
-    def train(self, T):
-        pass
+        self.opt = tf.optimizers.SGD(learning_rate=learning_rate,
+            momentum=0.9)
 
-class LinearClassifier(Model):
-    def setup(self):
-        self.model = keras.Sequential([
-            keras.layers.Input(shape=(self.input_size)),
-            keras.layers.Dense(self.output_size, activation=tf.nn.softmax)
-        ])
+    def act(self, s):
+        S = self.pre(s)
+        p = self.policy(S)
+        return np.random.choice(p)
 
-        self.loss = discrete_policy_loss
+    def train(self, S, A, R, I):
+        values = self.vf(S)
+
+        gp = loss.policy_gradient(self.policy, values, S, A, R)
+
+        optimizer.apply_gradients(zip(gp,self.policy.trainable_variables))
+
+        gc = loss.value_gradient(self.vf, S, R, I)
+
+        optimizer.apply_gradients(zip(gv,self.vf.trainable_variables))
+
+        loss = loss.discrete_policy_loss(self.policy(S),A,R)
+
+        return loss

@@ -10,13 +10,16 @@ class EpisodeReplay:
         self.batch_size = batch_size
 
         self.tuples = []
+        self.rewards = []
 
-    def append(self, tuples):
+    def append(self, tuples, r):
         if len(self.tuples) < self.size:
             self.tuples.append(tuples)
+            self.rewards.append(r+1e-3)
         else:
             i = np.random.randint(self.size)
             self.tuples[i] = tuples
+            self.rewards[i] = r+1e-3
 
     def sample(self):
         S = np.zeros((self.batch_size, self.num_steps, self.input_size),
@@ -26,13 +29,16 @@ class EpisodeReplay:
         R = np.zeros((self.batch_size, self.num_steps),
             dtype=np.float32)
 
-        tuples = np.random.choice(self.tuples, size=self.batch_size)
+        probs = np.array(self.rewards)/np.sum(self.rewards)
+
+        tuples = np.random.choice(self.tuples, size=self.batch_size,
+            p=probs)
 
         for i,T in enumerate(tuples):
             n = len(T)
             s = np.array([t[0] for t in T])
             if (len(s.shape) == 1): s = s[:,np.newaxis]
-            S[i,:n,:] = s
+            S[i,:n,s] = 1
 
             a = np.array([t[1] for t in T])
             for j,a_ in enumerate(a): A[i,j,a_] = 1
