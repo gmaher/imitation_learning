@@ -13,20 +13,23 @@ class DiscreteActorCritic:
 
     def act(self, s):
         S = self.pre(s)
-        p = self.policy(S)
-        return np.random.choice(p)
+        p = self.policy.predict(S)[0]
+        z = np.random.rand()
+        if z < 0.1:
+            return np.random.randint(len(p))
+        return np.random.choice(len(p), p=p)
 
     def train(self, S, A, R, I):
         values = self.vf(S)
 
         gp = loss.policy_gradient(self.policy, values, S, A, R)
 
-        optimizer.apply_gradients(zip(gp,self.policy.trainable_variables))
+        self.opt.apply_gradients(zip(gp,self.policy.trainable_variables))
 
-        gc = loss.value_gradient(self.vf, S, R, I)
+        gv = loss.value_gradient(self.vf, S, R, I)
 
-        optimizer.apply_gradients(zip(gv,self.vf.trainable_variables))
+        self.opt.apply_gradients(zip(gv,self.vf.trainable_variables))
 
-        loss = loss.discrete_policy_loss(self.policy(S),A,R)
+        l = loss.discrete_policy_loss(self.policy(S),values,A,R)
 
-        return loss
+        return l
