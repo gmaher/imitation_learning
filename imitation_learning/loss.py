@@ -10,7 +10,9 @@ def discrete_policy_loss(p, v, a, r):
     """
     log_pr = -tf.math.log(p)*a*(r - v)
 
-    return tf.reduce_sum(log_pr)/a.shape[0]
+    entropy = -tf.reduce_mean(p*tf.math.log(p))
+
+    return tf.reduce_sum(log_pr)/a.shape[0] + 0.01*entropy
 
 def policy_gradient(model, values, s, a, r):
     with tf.GradientTape() as t:

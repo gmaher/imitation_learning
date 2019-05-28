@@ -15,8 +15,7 @@ class DiscreteActorCritic:
         S = self.pre(s)
         p = self.policy.predict(S)[0]
         z = np.random.rand()
-        if z < 0.1:
-            return np.random.randint(len(p))
+
         return np.random.choice(len(p), p=p)
 
     def train(self, S, A, R, I):
